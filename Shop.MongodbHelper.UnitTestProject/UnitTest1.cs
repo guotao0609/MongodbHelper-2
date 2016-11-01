@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shop.MongodbHelper;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 
 namespace Shop.MongodbHelper.UnitTestProject
 {
@@ -12,35 +14,30 @@ namespace Shop.MongodbHelper.UnitTestProject
         [TestMethod]
         public void TestQuery()
         {
-            var d = testdb.Query<People>(p => p.Age == 16);
+            var d = testdb.Query<People>(p => p.Id.Equals(ObjectId.Parse("581850006dd4fa9a2ac177ed")));
             Assert.AreEqual(true, d.Count > 0);
         }
 
         [TestMethod]
         public void TestInsert()
         {
-            Exception ex = null;
-            try
-            {
-
-                testdb.Insert<People>(new People() { Id = 2, Name = "lily", Age = 18 });
-            }
-            catch (Exception e) { ex = e; }
-            Assert.AreEqual(ex, null);
+            var p = new People() { Name = "nima", Age = 9 };
+            testdb.Insert<People>(p);
+            Assert.AreEqual(true, !string.IsNullOrEmpty(p.Id.ToString()));
         }
 
 
         [TestMethod]
         public void TestDelete()
         {
-            var result = testdb.Delete<People>(p => p.Age == 16);
+            var result = testdb.Delete<People>(p => p.Age == 16 || p.Age == 18);
             Assert.AreEqual(true, result > 0);
         }
 
         [TestMethod]
         public void TestUpdate()
         {
-            var result = testdb.Update<People>(new People() { Id = 2, Name = "lily2", Age = 17 }, p => p.Age == 18);
+            var result = testdb.Update<People>(new People() { Name = "lily", Age = 17 }, p => p.Age == 18);
             Assert.AreEqual(true, result > 0);
 
         }
@@ -49,7 +46,8 @@ namespace Shop.MongodbHelper.UnitTestProject
     [CollectionName("People")]
     public class People
     {
-        public int Id { get; set; }
+        [BsonId]
+        public ObjectId Id;
         public string Name { get; set; }
         public int Age { get; set; }
     }
