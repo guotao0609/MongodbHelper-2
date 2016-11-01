@@ -27,7 +27,7 @@ namespace Shop.MongodbHelper
             }
             var attrs = t.GetCustomAttributes(typeof(CollectionNameAttribute), true);
             collection = this.MongodbAccessInstance.GetCollection<T>(attrs.Length == 0 ? t.Name : (attrs[0] as CollectionNameAttribute).Value);
-            lock ("Shop.MongodbLibrary.MongodbAccess.MongodbAccessBase.GetCollection")
+            lock ("Shop.MongodbHelper.MongodbAccess.CurrentCollection")
             {
                 if (!_collections.Keys.Contains(t.FullName))
                     _collections.Add(t.FullName, collection);
