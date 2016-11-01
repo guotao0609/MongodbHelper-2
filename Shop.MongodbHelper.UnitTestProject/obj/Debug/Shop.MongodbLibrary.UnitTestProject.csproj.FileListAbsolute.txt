@@ -1,0 +1,13 @@
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\Shop.MongodbLibrary.UnitTestProject.dll
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\Shop.MongodbLibrary.UnitTestProject.pdb
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\obj\Debug\Shop.MongodbLibrary.UnitTestProject.csprojResolveAssemblyReference.cache
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\obj\Debug\Shop.MongodbLibrary.UnitTestProject.dll
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\obj\Debug\Shop.MongodbLibrary.UnitTestProject.pdb
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\Shop.MongodbLibrary.MongodbAccess.dll
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\MongoDB.Driver.dll
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\MongoDB.Driver.Core.dll
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\MongoDB.Bson.dll
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\Shop.MongodbLibrary.MongodbAccess.pdb
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\MongoDB.Driver.xml
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\MongoDB.Driver.Core.xml
+D:\project_demo\Shop.MongodbLibrary\Shop.MongodbLibrary.UnitTestProject\bin\Debug\MongoDB.Bson.xml
