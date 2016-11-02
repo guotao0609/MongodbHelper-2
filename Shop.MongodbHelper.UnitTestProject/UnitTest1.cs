@@ -14,7 +14,9 @@ namespace Shop.MongodbHelper.UnitTestProject
         [TestMethod]
         public void TestQuery()
         {
-            var d = testdb.Query<People>(p => p.Id.Equals(ObjectId.Parse("581850006dd4fa9a2ac177ed")));
+            var d = testdb.Query<People>(p => p.Age.Equals(16) || p.Age.Equals(18));
+            var single = testdb.Query<People>(p => p.Id.Equals(ObjectId.Parse("58185ddde843a019d85c9221")));
+            var all = testdb.Query<People>(p => true);
             Assert.AreEqual(true, d.Count > 0);
         }
 
@@ -30,14 +32,14 @@ namespace Shop.MongodbHelper.UnitTestProject
         [TestMethod]
         public void TestDelete()
         {
-            var result = testdb.Delete<People>(p => p.Age == 16 || p.Age == 18);
+            var result = testdb.Delete<People>(p => p.Id.Equals(ObjectId.Parse("581850006dd4fa9a2ac177ed")));
             Assert.AreEqual(true, result > 0);
         }
 
         [TestMethod]
         public void TestUpdate()
         {
-            var result = testdb.Update<People>(new People() { Name = "lily", Age = 17 }, p => p.Age == 18);
+            var result = testdb.Update<People>(new System.Collections.Generic.Dictionary<System.Linq.Expressions.Expression<Func<People, object>>, object>() { { p => p.Name, "nimei" }, { p => p.Age, 10 } }, p => p.Equals(ObjectId.Parse("58185ddde843a019d85c9221")));
             Assert.AreEqual(true, result > 0);
 
         }

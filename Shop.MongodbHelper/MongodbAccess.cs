@@ -35,14 +35,14 @@ namespace Shop.MongodbHelper
             return collection;
         }
 
-        public virtual List<T> Query<T>(System.Linq.Expressions.Expression<Func<T, bool>> where) where T : class,new()
+        public virtual List<T> Query<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
         {
-            return this.CurrentCollection<T>().Find<T>(where).ToList();
+            return this.CurrentCollection<T>().Find<T>(filter).ToList();
         }
 
-        public virtual Task<List<T>> QueryAsync<T>(System.Linq.Expressions.Expression<Func<T, bool>> where) where T : class,new()
+        public virtual Task<List<T>> QueryAsync<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
         {
-            return this.CurrentCollection<T>().Find<T>(where).ToListAsync();
+            return this.CurrentCollection<T>().Find<T>(filter).ToListAsync();
         }
         public virtual void Insert<T>(T model) where T : class,new()
         {
@@ -61,29 +61,35 @@ namespace Shop.MongodbHelper
         {
             return this.CurrentCollection<T>().InsertManyAsync(array);
         }
-        public virtual long Update<T>(T model, System.Linq.Expressions.Expression<Func<T, bool>> where) where T : class,new()
+        public virtual long Update<T>(Dictionary<System.Linq.Expressions.Expression<Func<T, object>>, object> dic, System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
         {
-            return this.CurrentCollection<T>().UpdateMany<T>(where, new ObjectUpdateDefinition<T>(model)).ModifiedCount;
+            List<UpdateDefinition<T>> list = new List<UpdateDefinition<T>>();
+            foreach (var item in dic)
+            {
+                list.Add(Builders<T>.Update.Set(item.Key, item.Value));
+            }
+            var updates = Builders<T>.Update.Combine(list).CurrentDate("lastModified");
+            return this.CurrentCollection<T>().UpdateMany<T>(filter, updates).ModifiedCount;
         }
-        public virtual void UpdateAsync<T>(T model, System.Linq.Expressions.Expression<Func<T, bool>> where) where T : class,new()
+        public virtual void UpdateAsync<T>(T model, System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
         {
-            this.CurrentCollection<T>().UpdateManyAsync<T>(where, new ObjectUpdateDefinition<T>(model));
+            this.CurrentCollection<T>().UpdateManyAsync<T>(filter, new ObjectUpdateDefinition<T>(model));
         }
-        public virtual long QueryCount<T>(System.Linq.Expressions.Expression<Func<T, bool>> where) where T : class,new()
+        public virtual long QueryCount<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
         {
-            return this.CurrentCollection<T>().Count<T>(where);
+            return this.CurrentCollection<T>().Count<T>(filter);
         }
-        public virtual Task<long> QueryCountAsync<T>(System.Linq.Expressions.Expression<Func<T, bool>> where) where T : class,new()
+        public virtual Task<long> QueryCountAsync<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
         {
-            return this.CurrentCollection<T>().CountAsync<T>(where);
+            return this.CurrentCollection<T>().CountAsync<T>(filter);
         }
-        public virtual long Delete<T>(System.Linq.Expressions.Expression<Func<T, bool>> where) where T : class,new()
+        public virtual long Delete<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
         {
-            return this.CurrentCollection<T>().DeleteMany<T>(where).DeletedCount;
+            return this.CurrentCollection<T>().DeleteMany<T>(filter).DeletedCount;
         }
-        public virtual void DeleteAsync<T>(System.Linq.Expressions.Expression<Func<T, bool>> where) where T : class,new()
+        public virtual void DeleteAsync<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
         {
-            this.CurrentCollection<T>().DeleteManyAsync<T>(where);
+            this.CurrentCollection<T>().DeleteManyAsync<T>(filter);
         }
     }
 }
