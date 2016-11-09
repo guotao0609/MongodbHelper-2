@@ -11,9 +11,9 @@ namespace Shop.MongodbHelper
     {
         protected IMongoDatabase MongodbAccessInstance;
         private static Dictionary<string, object> _collections = new Dictionary<string, object>();
-        public MongodbAccess(string dbName)
+        public MongodbAccess(string dbName, string connstring)
         {
-            this.MongodbAccessInstance = MongodbAccessFactory.FactoryMongodbAccessInstance(dbName);
+            this.MongodbAccessInstance = MongodbAccessFactory.FactoryMongodbAccessInstance(dbName, connstring);
         }
         protected IMongoCollection<T> CurrentCollection<T>()
         {

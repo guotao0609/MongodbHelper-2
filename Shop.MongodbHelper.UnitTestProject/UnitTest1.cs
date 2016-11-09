@@ -9,7 +9,7 @@ namespace Shop.MongodbHelper.UnitTestProject
     [TestClass]
     public class UnitTest1
     {
-        MongodbAccess testdb = new MongodbAccess("Test");
+        MongodbAccess testdb = new MongodbAccess("Test", "mongodb://localhost:27017");
 
         [TestMethod]
         public void TestQuery()
