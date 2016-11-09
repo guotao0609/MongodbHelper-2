@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.MongodbHelper", "Shop.MongodbHelper\Shop.MongodbHelper.csproj", "{6A46E6AA-A6D8-4FC9-A42F-D758D24F3EE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongodbHelper", "MongodbHelper\MongodbHelper.csproj", "{6A46E6AA-A6D8-4FC9-A42F-D758D24F3EE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shop.MongodbHelper.UnitTestProject", "Shop.MongodbHelper.UnitTestProject\Shop.MongodbHelper.UnitTestProject.csproj", "{474CA8C3-B667-493D-991A-7DDD50EF97CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongodbHelper.UnitTestProject", "MongodbHelper.UnitTestProject\MongodbHelper.UnitTestProject.csproj", "{474CA8C3-B667-493D-991A-7DDD50EF97CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

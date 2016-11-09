@@ -6,8 +6,8 @@
     <ProjectGuid>{474CA8C3-B667-493D-991A-7DDD50EF97CE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Shop.MongodbLibrary.UnitTestProject</RootNamespace>
-    <AssemblyName>Shop.MongodbLibrary.UnitTestProject</AssemblyName>
+    <RootNamespace>MongodbLibrary.UnitTestProject</RootNamespace>
+    <AssemblyName>MongodbLibrary.UnitTestProject</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -54,9 +54,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shop.MongodbHelper\Shop.MongodbHelper.csproj">
+    <ProjectReference Include="..\MongodbHelper\MongodbHelper.csproj">
       <Project>{6a46e6aa-a6d8-4fc9-a42f-d758d24f3ee3}</Project>
-      <Name>Shop.MongodbHelper</Name>
+      <Name>MongodbHelper</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

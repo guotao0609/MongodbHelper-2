@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Shop.MongodbHelper;
+using MongodbHelper;
 
-namespace Shop.MongodbHelper.UnitTestProject
+namespace MongodbHelper.UnitTestProject
 {
     [TestClass]
     public class UnitTest1

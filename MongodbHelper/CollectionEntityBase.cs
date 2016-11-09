@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shop.MongodbHelper
+namespace MongodbHelper
 {
     public class CollectionEntityBase
     {

@@ -7,8 +7,8 @@
     <ProjectGuid>{6A46E6AA-A6D8-4FC9-A42F-D758D24F3EE3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Shop.MongodbHelper</RootNamespace>
-    <AssemblyName>Shop.MongodbHelper</AssemblyName>
+    <RootNamespace>MongodbHelper</RootNamespace>
+    <AssemblyName>MongodbHelper</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
