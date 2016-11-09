@@ -1,4 +1,8 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +15,16 @@ namespace Shop.MongodbHelper
     {
         private static Dictionary<string, IMongoDatabase> _mongodbDic = new Dictionary<string, IMongoDatabase>();
         private MongodbAccessFactory() { }
-        internal static IMongoDatabase FactoryMongodbAccessInstance(string dbName,string connstring)
+        internal static IMongoDatabase FactoryMongodbAccessInstance(string dbName, string connstring)
         {
+            if (!BsonClassMap.IsClassMapRegistered(typeof(CollectionEntityBase)))
+                BsonClassMap.RegisterClassMap<CollectionEntityBase>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.MapIdProperty(c => c.Primaryid)
+                        .SetIdGenerator(StringObjectIdGenerator.Instance)
+                        .SetSerializer(new StringSerializer(BsonType.ObjectId));
+                });
             if (_mongodbDic.Count <= 0 || !_mongodbDic.Keys.Contains(dbName))
             {
                 var client = new MongoClient(connstring);

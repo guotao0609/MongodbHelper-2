@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionEntityBase.cs" />
     <Compile Include="ModelAttribute.cs" />
     <Compile Include="MongodbAccess.cs" />
     <Compile Include="MongodbAccessFactory.cs" />
