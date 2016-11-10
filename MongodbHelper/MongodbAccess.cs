@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,33 +36,38 @@ namespace MongodbHelper
             return collection;
         }
 
-        public virtual List<T> Query<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
+        public virtual List<T> Query<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             return this.CurrentCollection<T>().Find<T>(filter).ToList();
         }
+        public virtual List<T> Query<T>(Func<IQueryable<T>, List<T>> func) where T : CollectionEntityBase, new()
+        {
+            return func(this.CurrentCollection<T>().AsQueryable());
+        }
 
-        public virtual Task<List<T>> QueryAsync<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
+        public virtual Task<List<T>> QueryAsync<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             return this.CurrentCollection<T>().Find<T>(filter).ToListAsync();
         }
-        public virtual void Insert<T>(T model) where T : class,new()
+
+        public virtual void Insert<T>(T model) where T : CollectionEntityBase, new()
         {
             this.CurrentCollection<T>().InsertOne(model);
         }
 
-        public virtual Task InsertAsync<T>(T model) where T : class,new()
+        public virtual Task InsertAsync<T>(T model) where T : CollectionEntityBase, new()
         {
             return this.CurrentCollection<T>().InsertOneAsync(model);
         }
-        public virtual void BatchInsert<T>(IEnumerable<T> array) where T : class,new()
+        public virtual void BatchInsert<T>(IEnumerable<T> array) where T : CollectionEntityBase, new()
         {
             this.CurrentCollection<T>().InsertMany(array);
         }
-        public virtual Task BatchInsertAsync<T>(IEnumerable<T> array) where T : class,new()
+        public virtual Task BatchInsertAsync<T>(IEnumerable<T> array) where T : CollectionEntityBase, new()
         {
             return this.CurrentCollection<T>().InsertManyAsync(array);
         }
-        public virtual long Update<T>(Dictionary<System.Linq.Expressions.Expression<Func<T, object>>, object> dic, System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
+        public virtual long Update<T>(Dictionary<Expression<Func<T, object>>, object> dic, Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             List<UpdateDefinition<T>> list = new List<UpdateDefinition<T>>();
             foreach (var item in dic)
@@ -71,23 +77,23 @@ namespace MongodbHelper
             var updates = Builders<T>.Update.Combine(list).CurrentDate("lastModified");
             return this.CurrentCollection<T>().UpdateMany<T>(filter, updates).ModifiedCount;
         }
-        public virtual void UpdateAsync<T>(T model, System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
+        public virtual void UpdateAsync<T>(T model, Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             this.CurrentCollection<T>().UpdateManyAsync<T>(filter, new ObjectUpdateDefinition<T>(model));
         }
-        public virtual long QueryCount<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
+        public virtual long QueryCount<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             return this.CurrentCollection<T>().Count<T>(filter);
         }
-        public virtual Task<long> QueryCountAsync<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
+        public virtual Task<long> QueryCountAsync<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             return this.CurrentCollection<T>().CountAsync<T>(filter);
         }
-        public virtual long Delete<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
+        public virtual long Delete<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             return this.CurrentCollection<T>().DeleteMany<T>(filter).DeletedCount;
         }
-        public virtual void DeleteAsync<T>(System.Linq.Expressions.Expression<Func<T, bool>> filter) where T : class,new()
+        public virtual void DeleteAsync<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             this.CurrentCollection<T>().DeleteManyAsync<T>(filter);
         }
