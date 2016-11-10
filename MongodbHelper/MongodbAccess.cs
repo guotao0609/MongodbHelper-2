@@ -50,6 +50,19 @@ namespace MongodbHelper
             return this.CurrentCollection<T>().Find<T>(filter).ToListAsync();
         }
 
+        public virtual long QueryCount<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
+        {
+            return this.CurrentCollection<T>().Count<T>(filter);
+        }
+        public virtual long QueryCount<T>(Func<IQueryable<T>, long> func) where T : CollectionEntityBase, new()
+        {
+            return func(this.CurrentCollection<T>().AsQueryable());
+        }
+        public virtual Task<long> QueryCountAsync<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
+        {
+            return this.CurrentCollection<T>().CountAsync<T>(filter);
+        }
+
         public virtual void Insert<T>(T model) where T : CollectionEntityBase, new()
         {
             this.CurrentCollection<T>().InsertOne(model);
@@ -80,14 +93,6 @@ namespace MongodbHelper
         public virtual void UpdateAsync<T>(T model, Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             this.CurrentCollection<T>().UpdateManyAsync<T>(filter, new ObjectUpdateDefinition<T>(model));
-        }
-        public virtual long QueryCount<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
-        {
-            return this.CurrentCollection<T>().Count<T>(filter);
-        }
-        public virtual Task<long> QueryCountAsync<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
-        {
-            return this.CurrentCollection<T>().CountAsync<T>(filter);
         }
         public virtual long Delete<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
