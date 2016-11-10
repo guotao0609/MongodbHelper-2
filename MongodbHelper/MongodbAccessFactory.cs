@@ -14,6 +14,7 @@ namespace MongodbHelper
     internal class MongodbAccessFactory
     {
         private static Dictionary<string, IMongoDatabase> _mongodbDic = new Dictionary<string, IMongoDatabase>();
+        private static MongoClient _mongoClient;
         private MongodbAccessFactory() { }
         internal static IMongoDatabase FactoryMongodbAccessInstance(string dbName, string connstring)
         {
@@ -27,8 +28,9 @@ namespace MongodbHelper
                 });
             if (_mongodbDic.Count <= 0 || !_mongodbDic.Keys.Contains(dbName))
             {
-                var client = new MongoClient(connstring);
-                var database = client.GetDatabase(dbName);
+                if (_mongoClient == null)
+                    _mongoClient = new MongoClient(connstring);
+                var database = _mongoClient.GetDatabase(dbName);
                 _mongodbDic.Add(dbName, database);
             }
             return _mongodbDic[dbName];
