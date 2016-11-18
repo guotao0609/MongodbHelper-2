@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MongodbHelper
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class, Inherited=true)]
     public class CollectionNameAttribute : Attribute
     {
         public CollectionNameAttribute(string collectionName)

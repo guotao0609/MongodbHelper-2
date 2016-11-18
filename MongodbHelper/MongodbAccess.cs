@@ -36,11 +36,12 @@ namespace MongodbHelper
             return collection;
         }
 
-        public virtual List<T> Query<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
+        public virtual M Query<T, M>(Func<MongoCollectionProxy<T>, M> func) where T : CollectionEntityBase, new()
         {
-            return this.CurrentCollection<T>().Find<T>(filter).ToList();
+            return func(new MongoCollectionProxy<T>(this.CurrentCollection<T>()));
         }
-        public virtual List<T> Query<T>(Func<IQueryable<T>, List<T>> func) where T : CollectionEntityBase, new()
+
+        public virtual M QueryExt<T, M>(Func<IQueryable<T>, M> func) where T : CollectionEntityBase, new()
         {
             return func(this.CurrentCollection<T>().AsQueryable());
         }
@@ -53,10 +54,6 @@ namespace MongodbHelper
         public virtual long QueryCount<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             return this.CurrentCollection<T>().Count<T>(filter);
-        }
-        public virtual long QueryCount<T>(Func<IQueryable<T>, long> func) where T : CollectionEntityBase, new()
-        {
-            return func(this.CurrentCollection<T>().AsQueryable());
         }
         public virtual Task<long> QueryCountAsync<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {

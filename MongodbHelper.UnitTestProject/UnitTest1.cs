@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongodbHelper;
+using System.Collections.Generic;
 
 namespace MongodbHelper.UnitTestProject
 {
@@ -12,9 +13,10 @@ namespace MongodbHelper.UnitTestProject
         [TestMethod]
         public void TestQuery()
         {
-            var d = testdb.Query<People>(p => p.Age.Equals(16) || p.Age.Equals(18));
-            var single = testdb.Query<People>(p => p.Primaryid.Equals("58185ddde843a019d85c9221"));
-            var all = testdb.Query<People>(p => true);
+            //var d = testdb.Query<People>(p => p.Age.Equals(16) || p.Age.Equals(18));
+            //var single = testdb.Query<People>(p => p.Primaryid.Equals("58185ddde843a019d85c9221"));
+            //var all = testdb.Query<People>(p => true);
+            var d = testdb.Query<People, List<People>>(m => m.Where(v => v.Age.Equals(16)).ToList());
             Assert.AreEqual(true, d.Count > 0);
         }
 
