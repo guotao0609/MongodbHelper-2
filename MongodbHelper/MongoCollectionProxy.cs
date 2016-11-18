@@ -14,103 +14,105 @@ namespace MongodbHelper
         {
             this._mongoCollection = mongoCollection;
         }
-        private IMongoCollection<T> _mongoCollection { get; set; }
-
-        public FindFluentProxy<T> Where(Expression<Func<T, bool>> filter)
+        private IMongoCollection<T> _mongoCollection;
+        private FindFluentProxy<T> _findFluentProxy;
+        protected FindFluentProxy<T> FindFluentProxy
         {
-            return new FindFluentProxy<T>(this._mongoCollection.Find<T>(filter));
+            get
+            {
+                if (this._findFluentProxy == null)
+                    this._findFluentProxy = new FindFluentProxy<T>(this._mongoCollection.Find<T>(this._expression == null ? (t => true) : this._expression));
+                return this._findFluentProxy;
+            }
         }
-    }
-
-    public class FindFluentProxy<T>
-    {
-        public FindFluentProxy(IFindFluent<T, T> findFluent)
+        private Expression<Func<T, bool>> _expression;
+        private Expression<M> AndAlso<M>(Expression<M> left, Expression<M> right)
         {
-            this._findFluent = findFluent;
+            return Expression.Lambda<M>(Expression.AndAlso(left.Body, right.Body), left.Parameters);
         }
-        private IFindFluent<T, T> _findFluent { get; set; }
-
-
+        public FindFluentProxy<T> Where(Expression<Func<T, bool>> where)
+        {
+            if (this._expression == null)
+                this._expression = where;
+            else
+                this._expression = this.AndAlso<Func<T, bool>>(this._expression, where);
+            return new FindFluentProxy<T>(this._mongoCollection.Find<T>(where));
+        }
         public FindFluentProxy<T> Sort(Expression<Func<T, object>> sort)
         {
-            _findFluent = this._findFluent.SortBy(sort);
-            return this;
+            return this.FindFluentProxy.Sort(sort);
         }
-
         public FindFluentProxy<T> SortByDescending(Expression<Func<T, object>> sort)
         {
-            _findFluent = this._findFluent.SortByDescending(sort);
-            return this;
+            return this.FindFluentProxy.SortByDescending(sort);
         }
 
         public FindFluentProxy<T> Skip(int skip)
         {
-            _findFluent = this._findFluent.Skip(skip);
-            return this;
+            return this.FindFluentProxy.Skip(skip);
         }
 
         public FindFluentProxy<T> Take(int take)
         {
-            _findFluent = this._findFluent.Limit(take);
-            return this;
+            return this.FindFluentProxy.Take(take);
         }
 
         public T First()
         {
-            return this._findFluent.First();
+            return this.FindFluentProxy.First();
         }
 
         public T FirstOrDefault()
         {
-            return this._findFluent.FirstOrDefault();
+            return this.FindFluentProxy.FirstOrDefault();
         }
 
         public Task<T> FirstAsync()
         {
-            return this._findFluent.FirstAsync();
+            return this.FindFluentProxy.FirstAsync();
         }
         public Task<T> FirstOrDefaultAsync()
         {
-            return this._findFluent.FirstOrDefaultAsync();
+            return this.FindFluentProxy.FirstOrDefaultAsync();
         }
 
 
         public T Single()
         {
-            return this._findFluent.Single();
+            return this.FindFluentProxy.Single();
         }
         public T SingleOrDefault()
         {
-            return this._findFluent.SingleOrDefault();
+            return this.FindFluentProxy.SingleOrDefault();
         }
         public Task<T> SingleAsync()
         {
-            return this._findFluent.SingleAsync();
+            return this.FindFluentProxy.SingleAsync();
         }
         public Task<T> SingleOrDefaultAsync()
         {
-            return this._findFluent.SingleOrDefaultAsync();
+            return this.FindFluentProxy.SingleOrDefaultAsync();
         }
 
         public IEnumerable<T> ToEnumerable()
         {
-            return this._findFluent.ToEnumerable();
+            return this.FindFluentProxy.ToEnumerable();
         }
         public List<T> ToList()
         {
-            return this._findFluent.ToList();
+            return this.FindFluentProxy.ToList();
         }
         public Task<List<T>> ToListAsync()
         {
-            return this._findFluent.ToListAsync();
+            return this.FindFluentProxy.ToListAsync();
         }
         public long Count()
         {
-            return this._findFluent.Count();
+            return this.FindFluentProxy.Count();
         }
         public Task<long> CountAsync()
         {
-            return this._findFluent.CountAsync();
+            return this.FindFluentProxy.CountAsync();
         }
     }
 }

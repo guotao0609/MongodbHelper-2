@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="ExampleBaseBll.cs" />
     <Compile Include="CollectionEntityBase.cs" />
+    <Compile Include="FindFluentProxy.cs" />
     <Compile Include="MongoCollectionProxy.cs" />
     <Compile Include="ModelAttribute.cs" />
     <Compile Include="MongodbAccess.cs" />

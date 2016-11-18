@@ -28,6 +28,5 @@ D:\project\arladmp\trunk\MongodbHelper\MongodbHelper\bin\Debug\MongoDB.Driver.dl
 D:\project\arladmp\trunk\MongodbHelper\MongodbHelper\bin\Debug\MongoDB.Bson.xml
 D:\project\arladmp\trunk\MongodbHelper\MongodbHelper\bin\Debug\MongoDB.Driver.xml
 D:\project\arladmp\trunk\MongodbHelper\MongodbHelper\bin\Debug\MongoDB.Driver.Core.xml
-D:\project\arladmp\trunk\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.csprojResolveAssemblyReference.cache
 D:\project\arladmp\trunk\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.dll
 D:\project\arladmp\trunk\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.pdb
