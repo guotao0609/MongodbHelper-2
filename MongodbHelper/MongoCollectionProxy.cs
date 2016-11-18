@@ -108,11 +108,11 @@ namespace MongodbHelper
         }
         public long Count()
         {
-            return this.FindFluentProxy.Count();
+            return this._mongoCollection.Count<T>(this._expression == null ? (t => true) : this._expression);
         }
         public Task<long> CountAsync()
         {
-            return this.FindFluentProxy.CountAsync();
+            return this._mongoCollection.CountAsync<T>(this._expression == null ? (t => true) : this._expression);
         }
     }
 }

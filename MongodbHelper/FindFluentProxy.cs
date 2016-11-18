@@ -90,13 +90,5 @@ namespace MongodbHelper
         {
             return this._findFluent.ToListAsync();
         }
-        public long Count()
-        {
-            return this._findFluent.Count();
-        }
-        public Task<long> CountAsync()
-        {
-            return this._findFluent.CountAsync();
-        }
     }
 }
