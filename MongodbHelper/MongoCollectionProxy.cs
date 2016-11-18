@@ -30,13 +30,13 @@ namespace MongodbHelper
         {
             return Expression.Lambda<M>(Expression.AndAlso(left.Body, right.Body), left.Parameters);
         }
-        public FindFluentProxy<T> Where(Expression<Func<T, bool>> where)
+        public MongoCollectionProxy<T> Where(Expression<Func<T, bool>> where)
         {
             if (this._expression == null)
                 this._expression = where;
             else
                 this._expression = this.AndAlso<Func<T, bool>>(this._expression, where);
-            return new FindFluentProxy<T>(this._mongoCollection.Find<T>(where));
+            return this;
         }
         public FindFluentProxy<T> Sort(Expression<Func<T, object>> sort)
         {
