@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExampleBaseBll.cs" />
     <Compile Include="CollectionEntityBase.cs" />
     <Compile Include="MongoCollectionProxy.cs" />
     <Compile Include="ModelAttribute.cs" />

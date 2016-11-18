@@ -24,3 +24,16 @@ D:\project\arladmp\trunk\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\M
 D:\project\arladmp\trunk\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongoDB.Driver.xml
 D:\project\arladmp\trunk\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongoDB.Driver.Core.xml
 D:\project\arladmp\trunk\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongoDB.Bson.xml
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongodbLibrary.UnitTestProject.dll
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongodbLibrary.UnitTestProject.pdb
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongodbHelper.dll
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongoDB.Driver.dll
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongoDB.Driver.Core.dll
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongoDB.Bson.dll
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongodbHelper.pdb
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongoDB.Driver.xml
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongoDB.Driver.Core.xml
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\bin\Debug\MongoDB.Bson.xml
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\obj\Debug\MongodbHelper.UnitTestProject.csprojResolveAssemblyReference.cache
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\obj\Debug\MongodbLibrary.UnitTestProject.dll
+D:\github\MongodbHelper\MongodbHelper.UnitTestProject\obj\Debug\MongodbLibrary.UnitTestProject.pdb
