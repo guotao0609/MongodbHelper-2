@@ -26,16 +26,19 @@ namespace MongodbHelper
             }
         }
         private Expression<Func<T, bool>> _expression;
-        private Expression<M> AndAlso<M>(Expression<M> left, Expression<M> right)
+        private Expression<Func<T, bool>> And(Expression<Func<T, bool>> expr1, Expression<Func<T, bool>> expr2)
         {
-            return Expression.Lambda<M>(Expression.AndAlso(left.Body, right.Body), left.Parameters);
+            var paramExpr = Expression.Parameter(typeof(T));
+            var exprBody = Expression.And(expr1.Body, expr2.Body);
+            exprBody = (BinaryExpression)new ParameterVisitor(paramExpr).Visit(exprBody);
+            return Expression.Lambda<Func<T, bool>>(exprBody, paramExpr);
         }
         public MongoCollectionProxy<T> Where(Expression<Func<T, bool>> where)
         {
             if (this._expression == null)
                 this._expression = where;
             else
-                this._expression = this.AndAlso<Func<T, bool>>(this._expression, where);
+                this._expression = this.And(this._expression, where);
             return this;
         }
         public FindFluentProxy<T> Sort(Expression<Func<T, object>> sort)

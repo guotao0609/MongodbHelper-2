@@ -55,6 +55,7 @@
     <Compile Include="ModelAttribute.cs" />
     <Compile Include="MongodbAccess.cs" />
     <Compile Include="MongodbAccessFactory.cs" />
+    <Compile Include="ParameterVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
