@@ -8,7 +8,7 @@ namespace MongodbHelper.UnitTestProject
     [TestClass]
     public class UnitTest1
     {
-        MongodbAccess testdb = new MongodbAccess("Test", "mongodb://localhost:27017");
+        MongodbAccess testdb = new MongodbAccess("mongodb://localhost:27017");
 
         [TestMethod]
         public void TestQuery()
@@ -45,7 +45,7 @@ namespace MongodbHelper.UnitTestProject
         }
     }
 
-    [CollectionName("People")]
+    [CollectionName("Test","People")]
     public class People : CollectionEntityBase
     {
         public string Name { get; set; }

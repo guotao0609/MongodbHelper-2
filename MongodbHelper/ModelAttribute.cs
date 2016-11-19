@@ -6,15 +6,22 @@ using System.Threading.Tasks;
 
 namespace MongodbHelper
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited=true)]
+    [AttributeUsage(AttributeTargets.Class, Inherited = true)]
     public class CollectionNameAttribute : Attribute
     {
-        public CollectionNameAttribute(string collectionName)
+        public CollectionNameAttribute(string datebaseName, string collectionName)
         {
-            Value = collectionName;
+            this.DatebaseName = datebaseName;
+            this.CollectionName = collectionName;
         }
 
-        public string Value
+        public string DatebaseName
+        {
+            get;
+            private set;
+        }
+
+        public string CollectionName
         {
             get;
             private set;

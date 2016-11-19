@@ -10,13 +10,13 @@ namespace MongodbHelper
 {
     public class MongodbAccess
     {
-        protected IMongoDatabase MongodbAccessInstance;
+        protected string _connstring;
         private static Dictionary<string, object> _collections = new Dictionary<string, object>();
-        public MongodbAccess(string dbName, string connstring)
+        public MongodbAccess(string connstring)
         {
-            this.MongodbAccessInstance = MongodbAccessFactory.FactoryMongodbAccessInstance(dbName, connstring);
+            this._connstring = connstring;
         }
-        protected IMongoCollection<T> CurrentCollection<T>()
+        protected IMongoCollection<T> CurrentCollection<T>() where T : CollectionEntityBase, new()
         {
             Type t = typeof(T);
             IMongoCollection<T> collection;
@@ -27,7 +27,13 @@ namespace MongodbHelper
                     return collection;
             }
             var attrs = t.GetCustomAttributes(typeof(CollectionNameAttribute), true);
-            collection = this.MongodbAccessInstance.GetCollection<T>(attrs.Length == 0 ? t.Name : (attrs[0] as CollectionNameAttribute).Value);
+            if (attrs.Length == 0)
+                throw new Exception("not found CollectionNameAttribute");
+            if (string.IsNullOrEmpty((attrs[0] as CollectionNameAttribute).DatebaseName))
+                throw new Exception("not found datebaseName");
+            if (string.IsNullOrEmpty((attrs[0] as CollectionNameAttribute).CollectionName))
+                throw new Exception("not found collectionName");
+            collection = MongodbAccessFactory.FactoryMongodbAccessInstance((attrs[0] as CollectionNameAttribute).DatebaseName, this._connstring).GetCollection<T>((attrs[0] as CollectionNameAttribute).CollectionName);
             lock ("MongodbHelper.MongodbAccess.CurrentCollection")
             {
                 if (!_collections.Keys.Contains(t.FullName))
@@ -44,20 +50,6 @@ namespace MongodbHelper
         public virtual M QueryExt<T, M>(Func<IQueryable<T>, M> func) where T : CollectionEntityBase, new()
         {
             return func(this.CurrentCollection<T>().AsQueryable());
-        }
-
-        public virtual Task<List<T>> QueryAsync<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
-        {
-            return this.CurrentCollection<T>().Find<T>(filter).ToListAsync();
-        }
-
-        public virtual long QueryCount<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
-        {
-            return this.CurrentCollection<T>().Count<T>(filter);
-        }
-        public virtual Task<long> QueryCountAsync<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
-        {
-            return this.CurrentCollection<T>().CountAsync<T>(filter);
         }
 
         public virtual void Insert<T>(T model) where T : CollectionEntityBase, new()
