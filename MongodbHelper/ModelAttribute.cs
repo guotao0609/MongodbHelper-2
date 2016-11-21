@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace MongodbHelper
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = true)]
-    public class CollectionNameAttribute : Attribute
+    public class ModelMappingAttribute : Attribute
     {
-        public CollectionNameAttribute(string datebaseName, string collectionName)
+        public ModelMappingAttribute(string datebaseName, string collectionName)
         {
             this.DatebaseName = datebaseName;
             this.CollectionName = collectionName;

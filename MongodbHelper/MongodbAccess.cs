@@ -26,14 +26,14 @@ namespace MongodbHelper
                 if (collection != null)
                     return collection;
             }
-            var attrs = t.GetCustomAttributes(typeof(CollectionNameAttribute), true);
+            var attrs = t.GetCustomAttributes(typeof(ModelMappingAttribute), true);
             if (attrs.Length == 0)
                 throw new Exception("not found CollectionNameAttribute");
-            if (string.IsNullOrEmpty((attrs[0] as CollectionNameAttribute).DatebaseName))
+            if (string.IsNullOrEmpty((attrs[0] as ModelMappingAttribute).DatebaseName))
                 throw new Exception("not found datebaseName");
-            if (string.IsNullOrEmpty((attrs[0] as CollectionNameAttribute).CollectionName))
+            if (string.IsNullOrEmpty((attrs[0] as ModelMappingAttribute).CollectionName))
                 throw new Exception("not found collectionName");
-            collection = MongodbAccessFactory.FactoryMongodbAccessInstance((attrs[0] as CollectionNameAttribute).DatebaseName, this._connstring).GetCollection<T>((attrs[0] as CollectionNameAttribute).CollectionName);
+            collection = MongodbAccessFactory.FactoryMongodbAccessInstance((attrs[0] as ModelMappingAttribute).DatebaseName, this._connstring).GetCollection<T>((attrs[0] as ModelMappingAttribute).CollectionName);
             lock ("MongodbHelper.MongodbAccess.CurrentCollection")
             {
                 if (!_collections.Keys.Contains(t.FullName))

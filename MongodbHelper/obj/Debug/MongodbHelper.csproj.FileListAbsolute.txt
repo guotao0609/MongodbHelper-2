@@ -41,3 +41,4 @@ E:\work\github\MongodbHelper\MongodbHelper\bin\Debug\MongoDB.Driver.Core.xml
 E:\work\github\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.csprojResolveAssemblyReference.cache
 E:\work\github\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.dll
 E:\work\github\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.pdb
+D:\github\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.csprojResolveAssemblyReference.cache

@@ -45,7 +45,7 @@ namespace MongodbHelper.UnitTestProject
         }
     }
 
-    [CollectionName("Test","People")]
+    [ModelMapping("Test","People")]
     public class People : CollectionEntityBase
     {
         public string Name { get; set; }
