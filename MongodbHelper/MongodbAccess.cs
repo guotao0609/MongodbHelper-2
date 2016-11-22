@@ -76,7 +76,7 @@ namespace MongodbHelper
             {
                 list.Add(Builders<T>.Update.Set(item.Key, item.Value.ToString()));
             }
-            var updates = Builders<T>.Update.Combine(list).CurrentDate("lastModified");
+            var updates = Builders<T>.Update.Combine(list);
             return this.CurrentCollection<T>().UpdateMany<T>(filter, updates).ModifiedCount;
         }
 
@@ -87,7 +87,7 @@ namespace MongodbHelper
             {
                 list.Add(Builders<T>.Update.Set(item.Key, item.Value.ToString()));
             }
-            var updates = Builders<T>.Update.Combine(list).CurrentDate("lastModified");
+            var updates = Builders<T>.Update.Combine(list);
             this.CurrentCollection<T>().UpdateManyAsync<T>(filter, updates);
         }
         public virtual long Delete<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
