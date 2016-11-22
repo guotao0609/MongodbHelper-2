@@ -41,3 +41,4 @@ E:\work\github\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.csprojResolve
 E:\work\github\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.dll
 E:\work\github\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.pdb
 D:\github\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.csprojResolveAssemblyReference.cache
+D:\project\arladmp\trunk\MongodbHelper\MongodbHelper\obj\Debug\MongodbHelper.csprojResolveAssemblyReference.cache
