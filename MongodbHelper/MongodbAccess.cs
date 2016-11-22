@@ -26,14 +26,14 @@ namespace MongodbHelper
                 if (collection != null)
                     return collection;
             }
-            var attrs = t.GetCustomAttributes(typeof(MappinginformationAttribute), true);
+            var attrs = t.GetCustomAttributes(typeof(ModelMappingAttribute), true);
             if (attrs.Length == 0)
                 throw new Exception("not found CollectionNameAttribute");
-            if (string.IsNullOrEmpty((attrs[0] as MappinginformationAttribute).DatebaseName))
+            if (string.IsNullOrEmpty((attrs[0] as ModelMappingAttribute).DatebaseName))
                 throw new Exception("not found datebaseName");
-            if (string.IsNullOrEmpty((attrs[0] as MappinginformationAttribute).CollectionName))
+            if (string.IsNullOrEmpty((attrs[0] as ModelMappingAttribute).CollectionName))
                 throw new Exception("not found collectionName");
-            collection = MongodbAccessFactory.FactoryMongodbAccessInstance((attrs[0] as MappinginformationAttribute).DatebaseName, this._connstring).GetCollection<T>((attrs[0] as MappinginformationAttribute).CollectionName);
+            collection = MongodbAccessFactory.FactoryMongodbAccessInstance((attrs[0] as ModelMappingAttribute).DatebaseName, this._connstring).GetCollection<T>((attrs[0] as ModelMappingAttribute).CollectionName);
             lock ("MongodbHelper.MongodbAccess.CurrentCollection")
             {
                 if (!_collections.Keys.Contains(t.FullName))
@@ -69,19 +69,26 @@ namespace MongodbHelper
         {
             return this.CurrentCollection<T>().InsertManyAsync(array);
         }
-        public virtual long Update<T>(Dictionary<Expression<Func<T, object>>, object> dic, Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
+        public virtual long Update<T>(Dictionary<string, object> dic, Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
             List<UpdateDefinition<T>> list = new List<UpdateDefinition<T>>();
             foreach (var item in dic)
             {
-                list.Add(Builders<T>.Update.Set(item.Key, item.Value));
+                list.Add(Builders<T>.Update.Set(item.Key, item.Value.ToString()));
             }
             var updates = Builders<T>.Update.Combine(list).CurrentDate("lastModified");
             return this.CurrentCollection<T>().UpdateMany<T>(filter, updates).ModifiedCount;
         }
-        public virtual void UpdateAsync<T>(T model, Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
+
+        public virtual void UpdateAsync<T>(Dictionary<string, object> dic, Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
-            this.CurrentCollection<T>().UpdateManyAsync<T>(filter, new ObjectUpdateDefinition<T>(model));
+            List<UpdateDefinition<T>> list = new List<UpdateDefinition<T>>();
+            foreach (var item in dic)
+            {
+                list.Add(Builders<T>.Update.Set(item.Key, item.Value.ToString()));
+            }
+            var updates = Builders<T>.Update.Combine(list).CurrentDate("lastModified");
+            this.CurrentCollection<T>().UpdateManyAsync<T>(filter, updates);
         }
         public virtual long Delete<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
         {
