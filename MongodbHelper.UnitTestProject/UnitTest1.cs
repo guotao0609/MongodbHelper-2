@@ -39,13 +39,13 @@ namespace MongodbHelper.UnitTestProject
         [TestMethod]
         public void TestUpdate()
         {
-            var result = testdb.Update<People>(new System.Collections.Generic.Dictionary<System.Linq.Expressions.Expression<Func<People, object>>, object>() { { p => p.Name, "nimei" }, { p => p.Age, 10 } }, p => p.Equals("58185ddde843a019d85c9221"));
+            var result = testdb.Update<People>(new System.Collections.Generic.Dictionary<System.Linq.Expressions.Expression<Func<People, object>>, object>() { { p => p.Name, "nimei" }, { p => p.Age, 10 } }, p => p.Primaryid.Equals("58185ddde843a019d85c9221"));
             Assert.AreEqual(true, result > 0);
 
         }
     }
 
-    [ModelMapping("Test","People")]
+    [Mappinginformation("Test", "People")]
     public class People : CollectionEntityBase
     {
         public string Name { get; set; }
