@@ -8,32 +8,32 @@ using System.Threading.Tasks;
 
 namespace MongodbHelper
 {
-    public class MongoCollectionProxy<T>
+    public class MongoCollectionProxy<TDocument>
     {
-        public MongoCollectionProxy(IMongoCollection<T> mongoCollection)
+        public MongoCollectionProxy(IMongoCollection<TDocument> mongoCollection)
         {
             this._mongoCollection = mongoCollection;
         }
-        private IMongoCollection<T> _mongoCollection;
-        private FindFluentProxy<T> _findFluentProxy;
-        protected FindFluentProxy<T> FindFluentProxy
+        private IMongoCollection<TDocument> _mongoCollection;
+        private FindFluentProxy<TDocument> _findFluentProxy;
+        protected FindFluentProxy<TDocument> FindFluentProxy
         {
             get
             {
                 if (this._findFluentProxy == null)
-                    this._findFluentProxy = new FindFluentProxy<T>(this._mongoCollection.Find<T>(this._expression == null ? (t => true) : this._expression));
+                    this._findFluentProxy = new FindFluentProxy<TDocument>(this._mongoCollection.Find<TDocument>(this._expression == null ? (t => true) : this._expression));
                 return this._findFluentProxy;
             }
         }
-        private Expression<Func<T, bool>> _expression;
-        private Expression<Func<T, bool>> And(Expression<Func<T, bool>> expr1, Expression<Func<T, bool>> expr2)
+        private Expression<Func<TDocument, bool>> _expression;
+        private Expression<Func<TDocument, bool>> And(Expression<Func<TDocument, bool>> expr1, Expression<Func<TDocument, bool>> expr2)
         {
-            var paramExpr = Expression.Parameter(typeof(T));
+            var paramExpr = Expression.Parameter(typeof(TDocument));
             var exprBody = Expression.And(expr1.Body, expr2.Body);
             exprBody = (BinaryExpression)new ParameterVisitor(paramExpr).Visit(exprBody);
-            return Expression.Lambda<Func<T, bool>>(exprBody, paramExpr);
+            return Expression.Lambda<Func<TDocument, bool>>(exprBody, paramExpr);
         }
-        public MongoCollectionProxy<T> Where(Expression<Func<T, bool>> where)
+        public MongoCollectionProxy<TDocument> Where(Expression<Func<TDocument, bool>> where)
         {
             if (this._expression == null)
                 this._expression = where;
@@ -41,81 +41,86 @@ namespace MongodbHelper
                 this._expression = this.And(this._expression, where);
             return this;
         }
-        public FindFluentProxy<T> Sort(Expression<Func<T, object>> sort)
+        public FindFluentProxy<TDocument> Sort(Expression<Func<TDocument, object>> sort)
         {
             return this.FindFluentProxy.Sort(sort);
         }
-        public FindFluentProxy<T> SortByDescending(Expression<Func<T, object>> sort)
+        public FindFluentProxy<TDocument> SortByDescending(Expression<Func<TDocument, object>> sort)
         {
             return this.FindFluentProxy.SortByDescending(sort);
         }
 
-        public FindFluentProxy<T> Skip(int skip)
+        public AggregateFluentProxy<TDocument> Aggregate()
+        {
+            return new AggregateFluentProxy<TDocument>(this._mongoCollection.Aggregate());
+        }
+
+        public FindFluentProxy<TDocument> Skip(int skip)
         {
             return this.FindFluentProxy.Skip(skip);
         }
 
-        public FindFluentProxy<T> Take(int take)
+        public FindFluentProxy<TDocument> Limit(int limit)
         {
-            return this.FindFluentProxy.Take(take);
+            return this.FindFluentProxy.Limit(limit);
         }
 
-        public T First()
+        public TDocument First()
         {
             return this.FindFluentProxy.First();
         }
 
-        public T FirstOrDefault()
+        public TDocument FirstOrDefault()
         {
             return this.FindFluentProxy.FirstOrDefault();
         }
 
-        public Task<T> FirstAsync()
+        public Task<TDocument> FirstAsync()
         {
             return this.FindFluentProxy.FirstAsync();
         }
-        public Task<T> FirstOrDefaultAsync()
+        public Task<TDocument> FirstOrDefaultAsync()
         {
             return this.FindFluentProxy.FirstOrDefaultAsync();
         }
 
 
-        public T Single()
+        public TDocument Single()
         {
             return this.FindFluentProxy.Single();
         }
-        public T SingleOrDefault()
+        public TDocument SingleOrDefault()
         {
             return this.FindFluentProxy.SingleOrDefault();
         }
-        public Task<T> SingleAsync()
+        public Task<TDocument> SingleAsync()
         {
             return this.FindFluentProxy.SingleAsync();
         }
-        public Task<T> SingleOrDefaultAsync()
+        public Task<TDocument> SingleOrDefaultAsync()
         {
             return this.FindFluentProxy.SingleOrDefaultAsync();
         }
 
-        public IEnumerable<T> ToEnumerable()
+        public IEnumerable<TDocument> ToEnumerable()
         {
             return this.FindFluentProxy.ToEnumerable();
         }
-        public List<T> ToList()
+        public List<TDocument> ToList()
         {
             return this.FindFluentProxy.ToList();
         }
-        public Task<List<T>> ToListAsync()
+        public Task<List<TDocument>> ToListAsync()
         {
             return this.FindFluentProxy.ToListAsync();
         }
         public long Count()
         {
-            return this._mongoCollection.Count<T>(this._expression == null ? (t => true) : this._expression);
+            return this._mongoCollection.Count<TDocument>(this._expression == null ? (t => true) : this._expression);
         }
         public Task<long> CountAsync()
         {
-            return this._mongoCollection.CountAsync<T>(this._expression == null ? (t => true) : this._expression);
+            return this._mongoCollection.CountAsync<TDocument>(this._expression == null ? (t => true) : this._expression);
         }
     }
 }

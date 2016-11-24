@@ -9,84 +9,84 @@ using System.Threading.Tasks;
 namespace MongodbHelper
 {
 
-    public class FindFluentProxy<T>
+    public class FindFluentProxy<TResult>
     {
-        public FindFluentProxy(IFindFluent<T, T> findFluent)
+        public FindFluentProxy(IFindFluent<TResult, TResult> findFluent)
         {
             this._findFluent = findFluent;
         }
-        private IFindFluent<T, T> _findFluent { get; set; }
+        private IFindFluent<TResult, TResult> _findFluent { get; set; }
 
-        public FindFluentProxy<T> Sort(Expression<Func<T, object>> sort)
+        public FindFluentProxy<TResult> Sort(Expression<Func<TResult, object>> sort)
         {
             _findFluent = this._findFluent.SortBy(sort);
             return this;
         }
 
-        public FindFluentProxy<T> SortByDescending(Expression<Func<T, object>> sort)
+        public FindFluentProxy<TResult> SortByDescending(Expression<Func<TResult, object>> sort)
         {
             _findFluent = this._findFluent.SortByDescending(sort);
             return this;
         }
 
-        public FindFluentProxy<T> Skip(int skip)
+        public FindFluentProxy<TResult> Skip(int skip)
         {
             _findFluent = this._findFluent.Skip(skip);
             return this;
         }
 
-        public FindFluentProxy<T> Take(int take)
+        public FindFluentProxy<TResult> Limit(int limit)
         {
-            _findFluent = this._findFluent.Limit(take);
+            _findFluent = this._findFluent.Limit(limit);
             return this;
         }
 
-        public T First()
+        public TResult First()
         {
             return this._findFluent.First();
         }
 
-        public T FirstOrDefault()
+        public TResult FirstOrDefault()
         {
             return this._findFluent.FirstOrDefault();
         }
 
-        public Task<T> FirstAsync()
+        public Task<TResult> FirstAsync()
         {
             return this._findFluent.FirstAsync();
         }
-        public Task<T> FirstOrDefaultAsync()
+        public Task<TResult> FirstOrDefaultAsync()
         {
             return this._findFluent.FirstOrDefaultAsync();
         }
 
 
-        public T Single()
+        public TResult Single()
         {
             return this._findFluent.Single();
         }
-        public T SingleOrDefault()
+        public TResult SingleOrDefault()
         {
             return this._findFluent.SingleOrDefault();
         }
-        public Task<T> SingleAsync()
+        public Task<TResult> SingleAsync()
         {
             return this._findFluent.SingleAsync();
         }
-        public Task<T> SingleOrDefaultAsync()
+        public Task<TResult> SingleOrDefaultAsync()
         {
             return this._findFluent.SingleOrDefaultAsync();
         }
 
-        public IEnumerable<T> ToEnumerable()
+        public IEnumerable<TResult> ToEnumerable()
         {
             return this._findFluent.ToEnumerable();
         }
-        public List<T> ToList()
+        public List<TResult> ToList()
         {
             return this._findFluent.ToList();
         }
-        public Task<List<T>> ToListAsync()
+        public Task<List<TResult>> ToListAsync()
         {
             return this._findFluent.ToListAsync();
         }

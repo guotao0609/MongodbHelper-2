@@ -48,9 +48,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregateFluentProxy.cs" />
     <Compile Include="ExampleBaseBll.cs" />
     <Compile Include="CollectionEntityBase.cs" />
     <Compile Include="FindFluentProxy.cs" />
+    <Compile Include="MapReduceOptionsProxy.cs" />
     <Compile Include="MongoCollectionProxy.cs" />
     <Compile Include="ModelAttribute.cs" />
     <Compile Include="MongodbAccess.cs" />

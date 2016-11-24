@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongodbHelper;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MongodbHelper.UnitTestProject
 {
@@ -23,8 +24,11 @@ namespace MongodbHelper.UnitTestProject
         [TestMethod]
         public void TestInsert()
         {
-            var p = new People() { Name = "nima", Age = 9 };
+            string schoolid = Guid.NewGuid().ToString();
+            var p = new People() { Name = "nidie", Age = 9, SchoolGuid = schoolid };
             testdb.Insert<People>(p);
+            var s = new School() { SchoolGuid = schoolid, Name = "智障三中" };
+            testdb.Insert<School>(s);
             Assert.AreEqual(true, !string.IsNullOrEmpty(p.Primaryid));
         }
 
@@ -39,9 +43,61 @@ namespace MongodbHelper.UnitTestProject
         [TestMethod]
         public void TestUpdate()
         {
-            var result = testdb.Update<People>(new System.Collections.Generic.Dictionary<string, object>() { { "Name", "hahaha" }, {"Age", 110 } }, p => p.Primaryid.Equals("58184fec6dd4fa9a2ac177ec"));
+            var result = testdb.Update<People>(new System.Collections.Generic.Dictionary<string, object>() { { "Name", "hahaha" }, { "Age", 110 } }, p => p.Primaryid.Equals("58184fec6dd4fa9a2ac177ec"));
             Assert.AreEqual(true, result > 0);
 
+        }
+
+
+        [TestMethod]
+        public void TestMapReduce()
+        {
+            string map = @"function() {
+        emit(this.Name, 9);
+    }";
+            string reduce = @"function(key, values) {return key;}";
+            testdb.MapReduce<People, People>(new MapReduceOptionsProxy<People, People>() { Map = map, Reduce = reduce, DatabaseName = "Tempdb", CollectionName = "People" });
+
+        }
+
+        [TestMethod]
+        public void TestJoin()
+        {
+            //var schools = testdb.GetIQueryable<School>();
+            //var peoples = testdb.GetIQueryable<People>();
+            //var r = from t in schools
+            //        join u in peoples on t.SchoolGuid equals u.SchoolGuid into joined
+            //        select new { t, joined };
+            //var r1 = r.ToList();
+            var schools = testdb.GetIQueryable<School>();
+            var peoples = testdb.GetIQueryable<People>();
+            //var r = from t in schools
+            //        join u in peoples on t.SchoolGuid equals u.SchoolGuid into joined
+            //        from j in joined.DefaultIfEmpty()
+            //        join u2 in peoples on j.Age equals u2.Age into joined2
+            //        from j2 in joined2.DefaultIfEmpty()
+            //        select j2;
+            var r2 = from s in schools
+                     join p in peoples on s.SchoolGuid equals p.SchoolGuid into joined
+                     from j in joined.DefaultIfEmpty()
+                     select j;
+            var r3=from s in r2
+                    join p in peoples on s.Age equals p.Age into joined
+                    from j in joined.DefaultIfEmpty()
+                    select j;
+            var r2r = r2.ToList();
+
+
+            //var schools2 = from s in schools
+            //               join p in peoples on s.SchoolGuid equals p.SchoolGuid
+            //               where p.Age.Equals(9)
+            //               select p;
+            //var r3 = from s in schools2
+            //         join p in schools on s.SchoolGuid equals p.SchoolGuid
+            //         select s;
+            //var r2r = r3.ToList();
+
+            //var rr = r.ToList();
         }
     }
 
@@ -50,5 +106,13 @@ namespace MongodbHelper.UnitTestProject
     {
         public string Name { get; set; }
         public int Age { get; set; }
+        public string SchoolGuid { get; set; }
+    }
+
+    [MappingInformation("Test", "School")]
+    public class School : CollectionEntityBase
+    {
+        public string SchoolGuid { get; set; }
+        public string Name { get; set; }
     }
 }

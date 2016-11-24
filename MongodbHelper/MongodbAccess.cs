@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using MongodbHelper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +17,13 @@ namespace MongodbHelper
         {
             this._connstring = connstring;
         }
-        protected IMongoCollection<T> CurrentCollection<T>() where T : CollectionEntityBase, new()
+        protected IMongoCollection<TEntity> CurrentCollection<TEntity>() where TEntity : CollectionEntityBase, new()
         {
-            Type t = typeof(T);
-            IMongoCollection<T> collection;
+            Type t = typeof(TEntity);
+            IMongoCollection<TEntity> collection;
             if (_collections.ContainsKey(t.FullName))
             {
-                collection = _collections[t.FullName] as IMongoCollection<T>;
+                collection = _collections[t.FullName] as IMongoCollection<TEntity>;
                 if (collection != null)
                     return collection;
             }
@@ -33,7 +34,7 @@ namespace MongodbHelper
                 throw new Exception("not found datebaseName");
             if (string.IsNullOrEmpty((attrs[0] as MappingInformationAttribute).CollectionName))
                 throw new Exception("not found collectionName");
-            collection = MongodbAccessFactory.FactoryMongodbAccessInstance((attrs[0] as MappingInformationAttribute).DatebaseName, this._connstring).GetCollection<T>((attrs[0] as MappingInformationAttribute).CollectionName);
+            collection = MongodbAccessFactory.FactoryMongodbAccessInstance((attrs[0] as MappingInformationAttribute).DatebaseName, this._connstring).GetCollection<TEntity>((attrs[0] as MappingInformationAttribute).CollectionName);
             lock ("MongodbHelper.MongodbAccess.CurrentCollection")
             {
                 if (!_collections.Keys.Contains(t.FullName))
@@ -42,61 +43,110 @@ namespace MongodbHelper
             return collection;
         }
 
-        public virtual M Query<T, M>(Func<MongoCollectionProxy<T>, M> func) where T : CollectionEntityBase, new()
+        public virtual TResult Query<TEntity, TResult>(Func<MongoCollectionProxy<TEntity>, TResult> func) where TEntity : CollectionEntityBase, new()
         {
-            return func(new MongoCollectionProxy<T>(this.CurrentCollection<T>()));
+            return func(new MongoCollectionProxy<TEntity>(this.CurrentCollection<TEntity>()));
         }
 
-        public virtual M QueryExt<T, M>(Func<IQueryable<T>, M> func) where T : CollectionEntityBase, new()
+        public virtual TResult QueryExt<TEntity, TResult>(Func<IQueryable<TEntity>, TResult> func) where TEntity : CollectionEntityBase, new()
         {
-            return func(this.CurrentCollection<T>().AsQueryable());
+            return func(this.CurrentCollection<TEntity>().AsQueryable());
         }
 
-        public virtual void Insert<T>(T model) where T : CollectionEntityBase, new()
+        public virtual void Insert<TEntity>(TEntity model) where TEntity : CollectionEntityBase, new()
         {
-            this.CurrentCollection<T>().InsertOne(model);
+            this.CurrentCollection<TEntity>().InsertOne(model);
         }
 
-        public virtual Task InsertAsync<T>(T model) where T : CollectionEntityBase, new()
+        public virtual Task InsertAsync<TEntity>(TEntity model) where TEntity : CollectionEntityBase, new()
         {
-            return this.CurrentCollection<T>().InsertOneAsync(model);
+            return this.CurrentCollection<TEntity>().InsertOneAsync(model);
         }
-        public virtual void BatchInsert<T>(IEnumerable<T> array) where T : CollectionEntityBase, new()
+        public virtual void BatchInsert<TEntity>(IEnumerable<TEntity> array) where TEntity : CollectionEntityBase, new()
         {
-            this.CurrentCollection<T>().InsertMany(array);
+            this.CurrentCollection<TEntity>().InsertMany(array);
         }
-        public virtual Task BatchInsertAsync<T>(IEnumerable<T> array) where T : CollectionEntityBase, new()
+        public virtual Task BatchInsertAsync<TEntity>(IEnumerable<TEntity> array) where TEntity : CollectionEntityBase, new()
         {
-            return this.CurrentCollection<T>().InsertManyAsync(array);
+            return this.CurrentCollection<TEntity>().InsertManyAsync(array);
         }
-        public virtual long Update<T>(Dictionary<string, object> dic, Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
+        public virtual long Update<TEntity>(Dictionary<string, object> dic, Expression<Func<TEntity, bool>> filter) where TEntity : CollectionEntityBase, new()
         {
-            List<UpdateDefinition<T>> list = new List<UpdateDefinition<T>>();
+            List<UpdateDefinition<TEntity>> list = new List<UpdateDefinition<TEntity>>();
             foreach (var item in dic)
             {
-                list.Add(Builders<T>.Update.Set(item.Key, item.Value.ToString()));
+                list.Add(Builders<TEntity>.Update.Set(item.Key, item.Value.ToString()));
             }
-            var updates = Builders<T>.Update.Combine(list);
-            return this.CurrentCollection<T>().UpdateMany<T>(filter, updates).ModifiedCount;
+            var updates = Builders<TEntity>.Update.Combine(list);
+            return this.CurrentCollection<TEntity>().UpdateMany<TEntity>(filter, updates).ModifiedCount;
         }
 
-        public virtual void UpdateAsync<T>(Dictionary<string, object> dic, Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
+        public virtual void UpdateAsync<TEntity>(Dictionary<string, object> dic, Expression<Func<TEntity, bool>> filter) where TEntity : CollectionEntityBase, new()
         {
-            List<UpdateDefinition<T>> list = new List<UpdateDefinition<T>>();
+            List<UpdateDefinition<TEntity>> list = new List<UpdateDefinition<TEntity>>();
             foreach (var item in dic)
             {
-                list.Add(Builders<T>.Update.Set(item.Key, item.Value.ToString()));
+                list.Add(Builders<TEntity>.Update.Set(item.Key, item.Value.ToString()));
             }
-            var updates = Builders<T>.Update.Combine(list);
-            this.CurrentCollection<T>().UpdateManyAsync<T>(filter, updates);
+            var updates = Builders<TEntity>.Update.Combine(list);
+            this.CurrentCollection<TEntity>().UpdateManyAsync<TEntity>(filter, updates);
         }
-        public virtual long Delete<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
+        public virtual long Delete<TEntity>(Expression<Func<TEntity, bool>> filter) where TEntity : CollectionEntityBase, new()
         {
-            return this.CurrentCollection<T>().DeleteMany<T>(filter).DeletedCount;
+            return this.CurrentCollection<TEntity>().DeleteMany<TEntity>(filter).DeletedCount;
         }
-        public virtual void DeleteAsync<T>(Expression<Func<T, bool>> filter) where T : CollectionEntityBase, new()
+        public virtual void DeleteAsync<TEntity>(Expression<Func<TEntity, bool>> filter) where TEntity : CollectionEntityBase, new()
         {
-            this.CurrentCollection<T>().DeleteManyAsync<T>(filter);
+            this.CurrentCollection<TEntity>().DeleteManyAsync<TEntity>(filter);
+        }
+
+        public virtual IEnumerable<TResult> MapReduce<TEntity, TResult>(MapReduceOptionsProxy<TEntity, TResult> options) where TEntity : CollectionEntityBase, new()
+        {
+            if (string.IsNullOrEmpty(options.Map))
+                throw new Exception("map is must");
+            if (string.IsNullOrEmpty(options.Reduce))
+                throw new Exception("reduce is must");
+            var o = new MapReduceOptions<TEntity, TResult>();
+            if (options.OutputEnum.Equals(MapReduceOutputOptionsEnum.Inline))
+            {
+                o.OutputOptions = MapReduceOutputOptions.Inline;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(options.DatabaseName) || string.IsNullOrEmpty(options.CollectionName))
+                    throw new Exception("DatabaseName and CollectionName is must");
+                if (options.OutputEnum.Equals(MapReduceOutputOptionsEnum.Merge))
+                    o.OutputOptions = MapReduceOutputOptions.Reduce(options.CollectionName, options.DatabaseName);
+                else if (options.OutputEnum.Equals(MapReduceOutputOptionsEnum.Reduce))
+                    o.OutputOptions = MapReduceOutputOptions.Reduce(options.CollectionName, options.DatabaseName);
+                else if (options.OutputEnum.Equals(MapReduceOutputOptionsEnum.Replace))
+                    o.OutputOptions = MapReduceOutputOptions.Replace(options.CollectionName, options.DatabaseName);
+            }
+            o.BypassDocumentValidation = options.BypassDocumentValidation;
+            if (!string.IsNullOrEmpty(options.Filter))
+                o.Filter = options.Filter;
+            if (!string.IsNullOrEmpty(options.Finalize))
+                o.Finalize = options.Finalize;
+            o.JavaScriptMode = options.JavaScriptMode;
+            o.Limit = options.Limit;
+            o.MaxTime = options.MaxTime;
+            if (!string.IsNullOrEmpty(options.Sort))
+                o.Sort = options.Sort;
+            o.Verbose = options.Verbose;
+            var r = this.CurrentCollection<TEntity>().MapReduce<TResult>(new MongoDB.Bson.BsonJavaScript(options.Map), new MongoDB.Bson.BsonJavaScript(options.Reduce), o);
+            if (options.OutputEnum.Equals(MapReduceOutputOptionsEnum.Inline))
+                return r.Current;
+            else return null;
+        }
+
+        public virtual void MapReduce<TEntity>(MapReduceOptionsProxy<TEntity, TEntity> options) where TEntity : CollectionEntityBase, new()
+        {
+            this.MapReduce<TEntity, TEntity>(options);
+        }
+
+        public virtual IQueryable<TEntity> GetIQueryable<TEntity>() where TEntity : CollectionEntityBase, new()
+        {
+            return this.CurrentCollection<TEntity>().AsQueryable();
         }
     }
 }

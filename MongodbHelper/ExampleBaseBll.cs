@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MongodbHelper
 {
-    public abstract class ExampleBaseBll<T> where T : CollectionEntityBase, new()
+    public abstract class ExampleBaseBll<TEntity> where TEntity : CollectionEntityBase, new()
     {
         public ExampleBaseBll(MongodbAccess acc)
         {
@@ -17,9 +17,9 @@ namespace MongodbHelper
         protected MongodbAccess DbInstance { get; set; }
         protected event EventHandler OnException;
 
-        protected virtual M BaseQuery<M>(Func<MongoCollectionProxy<T>, M> func)
+        protected virtual M BaseQuery<M>(Func<MongoCollectionProxy<TEntity>, M> func)
         {
-            return this.BaseQuery<T, M>(func);
+            return this.BaseQuery<TEntity, M>(func);
         }
         protected virtual M BaseQuery<E, M>(Func<MongoCollectionProxy<E>, M> func) where E : CollectionEntityBase, new()
         {
@@ -34,9 +34,9 @@ namespace MongodbHelper
             }
             return default(M);
         }
-        protected virtual M BaseQueryExt<M>(Func<IQueryable<T>, M> func)
+        protected virtual M BaseQueryExt<M>(Func<IQueryable<TEntity>, M> func)
         {
-            return this.BaseQueryExt<T, M>(func);
+            return this.BaseQueryExt<TEntity, M>(func);
         }
         protected virtual M BaseQueryExt<E, M>(Func<IQueryable<E>, M> func) where E : CollectionEntityBase, new()
         {
@@ -53,20 +53,20 @@ namespace MongodbHelper
         }
 
         
-        public virtual List<T> Query(Expression<Func<T, bool>> filter)
+        public virtual List<TEntity> Query(Expression<Func<TEntity, bool>> filter)
         {
-            return this.BaseQuery<List<T>>(q => q.Where(filter).ToList());
+            return this.BaseQuery<List<TEntity>>(q => q.Where(filter).ToList());
         }
-        public virtual List<T> QueryExt(Func<IQueryable<T>, List<T>> func)
+        public virtual List<TEntity> QueryExt(Func<IQueryable<TEntity>, List<TEntity>> func)
         {
-            return this.BaseQueryExt<List<T>>(func);
+            return this.BaseQueryExt<List<TEntity>>(func);
         }
 
-        public virtual long QueryCount(Expression<Func<T, bool>> filter)
+        public virtual long QueryCount(Expression<Func<TEntity, bool>> filter)
         {
             return this.BaseQuery<long>(q => q.Where(filter).Count());
         }
-        public virtual long? QueryCountExt(Func<IQueryable<T>, long> func)
+        public virtual long? QueryCountExt(Func<IQueryable<TEntity>, long> func)
         {
             return this.BaseQueryExt<long>(func);
         }
