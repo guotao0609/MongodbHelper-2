@@ -16,43 +16,50 @@ namespace MongodbHelper
         }
         protected MongodbAccess DbInstance { get; set; }
         protected event EventHandler OnException;
-
-        protected virtual M BaseQuery<M>(Func<MongoCollectionProxy<TEntity>, M> func)
+        protected virtual IQueryable<TEntity> GetIQueryable()
         {
-            return this.BaseQuery<TEntity, M>(func);
+            return this.GetIQueryable<TEntity>();
         }
-        protected virtual M BaseQuery<E, M>(Func<MongoCollectionProxy<E>, M> func) where E : CollectionEntityBase, new()
+        protected virtual IQueryable<TOtherEntity> GetIQueryable<TOtherEntity>() where TOtherEntity : CollectionEntityBase, new()
+        {
+            return this.DbInstance.GetIQueryable<TOtherEntity>();
+        }
+        protected virtual TResult BaseQuery<TResult>(Func<MongoCollectionProxy<TEntity>, TResult> func)
+        {
+            return this.BaseQuery<TEntity, TResult>(func);
+        }
+        protected virtual TResult BaseQuery<TOtherEntity, TResult>(Func<MongoCollectionProxy<TOtherEntity>, TResult> func) where TOtherEntity : CollectionEntityBase, new()
         {
             try
             {
-                return this.DbInstance.Query<E, M>(func);
+                return this.DbInstance.Query<TOtherEntity, TResult>(func);
             }
             catch (Exception ex)
             {
                 if (this.OnException != null)
                     this.OnException.Invoke(this, new BllEventArgs(ex));
             }
-            return default(M);
+            return default(TResult);
         }
-        protected virtual M BaseQueryExt<M>(Func<IQueryable<TEntity>, M> func)
+        protected virtual TResult BaseQueryExt<TResult>(Func<IQueryable<TEntity>, TResult> func)
         {
-            return this.BaseQueryExt<TEntity, M>(func);
+            return this.BaseQueryExt<TEntity, TResult>(func);
         }
-        protected virtual M BaseQueryExt<E, M>(Func<IQueryable<E>, M> func) where E : CollectionEntityBase, new()
+        protected virtual TResult BaseQueryExt<TOtherEntity, TResult>(Func<IQueryable<TOtherEntity>, TResult> func) where TOtherEntity : CollectionEntityBase, new()
         {
             try
             {
-                return this.DbInstance.QueryExt<E, M>(func);
+                return this.DbInstance.QueryExt<TOtherEntity, TResult>(func);
             }
             catch (Exception ex)
             {
                 if (this.OnException != null)
                     this.OnException.Invoke(this, new BllEventArgs(ex));
             }
-            return default(M);
+            return default(TResult);
         }
 
-        
+
         public virtual List<TEntity> Query(Expression<Func<TEntity, bool>> filter)
         {
             return this.BaseQuery<List<TEntity>>(q => q.Where(filter).ToList());
@@ -69,6 +76,23 @@ namespace MongodbHelper
         public virtual long? QueryCountExt(Func<IQueryable<TEntity>, long> func)
         {
             return this.BaseQueryExt<long>(func);
+        }
+
+        public virtual void BatchInsert(IEnumerable<TEntity> array)
+        {
+            this.BatchInsert<TEntity>(array);
+        }
+        public virtual void BatchInsert<TOtherEntity>(IEnumerable<TOtherEntity> array) where TOtherEntity : CollectionEntityBase, new()
+        {
+            this.DbInstance.BatchInsert<TOtherEntity>(array);
+        }
+        public virtual long Delete(Expression<Func<TEntity, bool>> filter)
+        {
+            return this.Delete<TEntity>(filter);
+        }
+        public virtual long Delete<TOtherEntity>(Expression<Func<TOtherEntity, bool>> filter) where TOtherEntity : CollectionEntityBase, new()
+        {
+            return this.DbInstance.Delete<TOtherEntity>(filter);
         }
     }
 

@@ -19,6 +19,7 @@ namespace MongodbHelper
         internal static IMongoDatabase FactoryMongodbAccessInstance(string dbName, string connstring)
         {
             if (!BsonClassMap.IsClassMapRegistered(typeof(CollectionEntityBase)))
+            {
                 BsonClassMap.RegisterClassMap<CollectionEntityBase>(cm =>
                 {
                     cm.AutoMap();
@@ -26,6 +27,8 @@ namespace MongodbHelper
                         .SetIdGenerator(StringObjectIdGenerator.Instance)
                         .SetSerializer(new StringSerializer(BsonType.ObjectId));
                 });
+                BsonSerializer.RegisterSerializer(typeof(DateTime), DateTimeSerializer.LocalInstance);
+            }
             if (_mongodbDic.Count <= 0 || !_mongodbDic.Keys.Contains(dbName))
             {
                 if (_mongoClient == null)

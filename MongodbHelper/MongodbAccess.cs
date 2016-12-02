@@ -13,6 +13,7 @@ namespace MongodbHelper
     {
         protected string _connstring;
         private static Dictionary<string, object> _collections = new Dictionary<string, object>();
+        private static Dictionary<string, IMongoDatabase> _databases = new Dictionary<string, IMongoDatabase>();
         public MongodbAccess(string connstring)
         {
             this._connstring = connstring;
@@ -27,20 +28,49 @@ namespace MongodbHelper
                 if (collection != null)
                     return collection;
             }
+            string dbName, collectionName;
             var attrs = t.GetCustomAttributes(typeof(MappingInformationAttribute), true);
             if (attrs.Length == 0)
                 throw new Exception("not found CollectionNameAttribute");
-            if (string.IsNullOrEmpty((attrs[0] as MappingInformationAttribute).DatebaseName))
+            dbName = (attrs[0] as MappingInformationAttribute).DatebaseName;
+            if (string.IsNullOrEmpty(dbName))
                 throw new Exception("not found datebaseName");
-            if (string.IsNullOrEmpty((attrs[0] as MappingInformationAttribute).CollectionName))
+            collectionName = (attrs[0] as MappingInformationAttribute).CollectionName;
+            if (string.IsNullOrEmpty(collectionName))
                 throw new Exception("not found collectionName");
-            collection = MongodbAccessFactory.FactoryMongodbAccessInstance((attrs[0] as MappingInformationAttribute).DatebaseName, this._connstring).GetCollection<TEntity>((attrs[0] as MappingInformationAttribute).CollectionName);
+            collection = this.CurrentDatabase(dbName).GetCollection<TEntity>(collectionName);
             lock ("MongodbHelper.MongodbAccess.CurrentCollection")
             {
                 if (!_collections.Keys.Contains(t.FullName))
                     _collections.Add(t.FullName, collection);
             }
             return collection;
+        }
+        protected IMongoDatabase CurrentDatabase(string dbName = null)
+        {
+            IMongoDatabase database;
+            if (_databases.ContainsKey(dbName))
+            {
+                database = _databases[dbName] as IMongoDatabase;
+                if (database != null)
+                    return database;
+            }
+            database = MongodbAccessFactory.FactoryMongodbAccessInstance(dbName, this._connstring);
+            lock ("MongodbHelper.MongodbAccess.CurrentDatabase")
+            {
+                if (!_databases.Keys.Contains(dbName))
+                    _databases.Add(dbName, database);
+            }
+            return database;
+        }
+        public void ChangeCollection<TEntity>(string dbName, string collectionName)
+        {
+            Type t = typeof(TEntity);
+            var collection = this.CurrentDatabase(dbName).GetCollection<TEntity>(collectionName);
+            if (_collections.ContainsKey(t.FullName))
+                _collections[t.FullName] = collection;
+            else
+                _collections.Add(t.FullName, collection);
         }
 
         public virtual TResult Query<TEntity, TResult>(Func<MongoCollectionProxy<TEntity>, TResult> func) where TEntity : CollectionEntityBase, new()
@@ -147,6 +177,25 @@ namespace MongodbHelper
         public virtual IQueryable<TEntity> GetIQueryable<TEntity>() where TEntity : CollectionEntityBase, new()
         {
             return this.CurrentCollection<TEntity>().AsQueryable();
+        }
+
+        public virtual void CreateCollection(string databaseName, string collectionName)
+        {
+            this.CurrentDatabase(databaseName).CreateCollection(collectionName);
+        }
+
+        public virtual void CreateCollectionAsync(string databaseName, string collectionName)
+        {
+            this.CurrentDatabase(databaseName).CreateCollectionAsync(collectionName);
+        }
+        public virtual void DropCollection(string databaseName, string collectionName)
+        {
+            this.CurrentDatabase(databaseName).DropCollection(collectionName);
+        }
+
+        public virtual void DropCollectionAsync(string databaseName, string collectionName)
+        {
+            this.CurrentDatabase(databaseName).DropCollectionAsync(collectionName);
         }
     }
 }
