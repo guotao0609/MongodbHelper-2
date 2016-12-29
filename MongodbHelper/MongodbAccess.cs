@@ -1,4 +1,6 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Driver;
 using MongodbHelper;
 using System;
 using System.Collections.Generic;
@@ -32,12 +34,23 @@ namespace MongodbHelper
             var attrs = t.GetCustomAttributes(typeof(MappingInformationAttribute), true);
             if (attrs.Length == 0)
                 throw new Exception("not found CollectionNameAttribute");
-            dbName = (attrs[0] as MappingInformationAttribute).DatebaseName;
+            var attr = attrs[0] as MappingInformationAttribute;
+            if (attr == null)
+                throw new Exception("CollectionNameAttribute mapping error");
+            dbName = attr.DatebaseName;
             if (string.IsNullOrEmpty(dbName))
                 throw new Exception("not found datebaseName");
-            collectionName = (attrs[0] as MappingInformationAttribute).CollectionName;
+            collectionName = attr.CollectionName;
             if (string.IsNullOrEmpty(collectionName))
                 throw new Exception("not found collectionName");
+            if (!BsonClassMap.IsClassMapRegistered(t))
+            {
+                BsonClassMap.RegisterClassMap<TEntity>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.SetIgnoreExtraElements(true);
+                });
+            }
             collection = this.CurrentDatabase(dbName).GetCollection<TEntity>(collectionName);
             lock ("MongodbHelper.MongodbAccess.CurrentCollection")
             {
@@ -105,7 +118,7 @@ namespace MongodbHelper
             List<UpdateDefinition<TEntity>> list = new List<UpdateDefinition<TEntity>>();
             foreach (var item in dic)
             {
-                list.Add(Builders<TEntity>.Update.Set(item.Key, item.Value.ToString()));
+                list.Add(Builders<TEntity>.Update.Set(item.Key, item.Value));
             }
             var updates = Builders<TEntity>.Update.Combine(list);
             return this.CurrentCollection<TEntity>().UpdateMany<TEntity>(filter, updates).ModifiedCount;
@@ -116,7 +129,7 @@ namespace MongodbHelper
             List<UpdateDefinition<TEntity>> list = new List<UpdateDefinition<TEntity>>();
             foreach (var item in dic)
             {
-                list.Add(Builders<TEntity>.Update.Set(item.Key, item.Value.ToString()));
+                list.Add(Builders<TEntity>.Update.Set(item.Key, item.Value));
             }
             var updates = Builders<TEntity>.Update.Combine(list);
             this.CurrentCollection<TEntity>().UpdateManyAsync<TEntity>(filter, updates);

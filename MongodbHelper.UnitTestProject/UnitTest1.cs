@@ -99,6 +99,35 @@ namespace MongodbHelper.UnitTestProject
 
             //var rr = r.ToList();
         }
+
+	[TestMethod]
+        public void TestMethod2()
+        {
+            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
+            //            MapReduceOptionsProxy<UserTag, UserTag> options = new MapReduceOptionsProxy<UserTag, UserTag>();
+            //            options.Map = @"function() {
+            //                    emit(this,{ this.usertype,this.userid});
+            //                }";
+            //            options.Reduce = @"function(key, values) {return {utype: values.usertype,uid:values.userid};}";
+            //            options.OutputEnum = MapReduceOutputOptionsEnum.Replace;
+            //            options.DatabaseName = "dm2usermappingdb";
+            //            options.CollectionName = "usertagtemp";
+            //            options.Limit = 10000;
+            //            db.MapReduce<UserTag>(options);
+
+
+            //var r = from u2 in users2
+            //        join u in users on u2.cookie equals u.cookie
+            //        select u;
+            //var r1 = r.ToList(); ;
+
+            //var t = db.QueryExt<UserTag, IEnumerable<UserTagTemp>>(q => q.Take(10).Select(m => new UserTagTemp() { userid = m.userid, usertype = m.usertype }).AsEnumerable());
+            //db.BatchInsert<UserTagTemp>(t);
+            watch.Stop();
+            System.Diagnostics.Debug.WriteLine("耗时：" + watch.ElapsedMilliseconds);
+
+        }
     }
 
     [MappingInformation("Test", "People")]
@@ -114,5 +143,64 @@ namespace MongodbHelper.UnitTestProject
     {
         public string SchoolGuid { get; set; }
         public string Name { get; set; }
+    }
+	
+    [MappingInformation("dm2usertagdb", "usertag")]
+    public class UserTag : CollectionEntityBase
+    {
+        public string hyuniqueid { get; set; }
+        public string companyhyuniqueid { get; set; }
+        public string brandhyuniqueid { get; set; }
+        public string userhyuniqueid { get; set; }
+        public string usertype { get; set; }
+        public string userid { get; set; }
+        public string treetagmappinghyuniqueid { get; set; }
+        public string tagcode { get; set; }
+        public string tagname { get; set; }
+        public double tagscore { get; set; }
+        public string treecode { get; set; }
+        public string treename { get; set; }
+        public string treehyuniqueid { get; set; }
+        public string taskid { get; set; }
+        public string ruleid { get; set; }
+        public string ip { get; set; }
+        public string city { get; set; }
+        public string region { get; set; }
+        public string country { get; set; }
+        public string headurl { get; set; }
+        public string siteid { get; set; }
+        public string channelid { get; set; }
+        public string platformid { get; set; }
+        public DateTime logcreatetime { get; set; }
+        public DateTime createtime { get; set; }
+    }
+
+    [MappingInformation("dm2usermappingdb", "usermapping")]
+    public class UserMapping : CollectionEntityBase
+    {
+        public string hyuniqueid { get; set; }
+        public string companyhyuniqueid { get; set; }
+        public string brandhyuniqueid { get; set; }
+        public string cookie { get; set; }
+        public string cellphone { get; set; }
+        public string socialmediatype { get; set; }
+        public string socialmediavalue { get; set; }
+        public string ip { get; set; }
+        public string city { get; set; }
+        public string region { get; set; }
+        public string country { get; set; }
+        public string headurl { get; set; }
+        public string siteid { get; set; }
+        public string channelid { get; set; }
+        public string platformid { get; set; }
+        public DateTime logcreatetime { get; set; }
+        public DateTime createtime { get; set; }
+    }
+
+    [MappingInformation("dm2usermappingdb", "usertagtemp")]
+    public class UserTagTemp : CollectionEntityBase
+    {
+        public string usertype { get; set; }
+        public string userid { get; set; }
     }
 }
